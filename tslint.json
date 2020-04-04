@@ -1,0 +1,79 @@
+{
+    "defaultSeverity": "warning",
+    "rules": {
+      // Encourage type safety/strictness
+      "no-any": true,
+      "no-non-null-assertion": true,
+      "no-unnecessary-type-assertion": true,
+  
+      // Prevent human errors
+      "await-promise": true,
+      "no-conditional-assignment": true,
+      "no-console": [true, "debug", "log"],
+      "no-boolean-literal-compare": true,
+      "no-empty": true,
+      "no-debugger": true,
+      "no-duplicate-super": true,
+      "no-duplicate-switch-case": true,
+      "no-invalid-template-strings": true,
+      "no-return-await": true,
+      "no-shadowed-variable": true,
+      "no-sparse-arrays": true,
+      "no-switch-case-fall-through": true,
+      "no-tautology-expression": true,
+      "no-unused-expression": true,
+      "variable-name": [true, "ban-keywords"],
+  
+      // Avoid bad JS-ness
+      "ban": [
+        true,
+        {
+          "name": ["*", "bind"],
+          "message": "Use an arrow function instead."
+        }
+      ],
+      "ban-comma-operator": true,
+      "curly": [true, "ignore-same-line"],
+      "new-parens": true,
+      "no-construct": true,
+      "no-duplicate-imports": true,
+      "no-eval": true,
+      "no-invalid-this": true,
+      "no-restricted-globals": true,
+      "no-string-throw": true,
+      "no-this-assignment": [true, "allow-destructuring"],
+      "no-unsafe-finally": true,
+      "no-var-keyword": true,
+      "one-variable-per-declaration": [true, "ignore-for-loop"],
+      "only-arrow-functions": true,
+      "radix": true,
+      "static-this": true,
+      "triple-equals": true,
+      "use-isnan": true,
+  
+      // Prefer functional code
+      "member-access": [true, "check-accessor", "check-parameter-property"],
+      "no-parameter-reassignment": true,
+      "no-unnecessary-class": true,
+      "prefer-const": true,
+      "prefer-function-over-method": [true, "allow-public", "allow-protected"],
+      "prefer-readonly": true,
+  
+      // Help code maintainability
+      "deprecation": true,
+      "no-default-export": true,
+  
+      // Enforce consistent style
+      "arrow-return-shorthand": [true, "multiline"],
+      "callable-types": true,
+      "class-name": true,
+      "comment-format": [true, "check-space"],
+      "interface-over-type-literal": true,
+      "jsdoc-format": [true, "check-multiline-start"],
+      "member-ordering": [true, "statics-first"],
+      "no-angle-bracket-type-assertion": true,
+      "no-namespace": true,
+      "object-literal-shorthand": true,
+      "prefer-method-signature": true
+    }
+  }
