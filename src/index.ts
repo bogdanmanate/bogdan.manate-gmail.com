@@ -6,25 +6,30 @@ import {flow} from 'fp-ts/lib/function';
 import { IO, io } from 'fp-ts/lib/IO'
 import {safeGetDOMElement, safeAddEventListener, safeAddElement} from './dom-utils'
 import {bindControlButton} from './bindings'
-import {rectFactory} from './geometries-factory'
+import {rectFactory, SVGSupportedGraphicElements, circleFactory} from './geometries-factory'
 
-const insertIO = bindControlButton('insertBtn', () => {
-	const handlerIO = pipe(
-		io.chain(rectFactory(), (svg) => {
-			return io.chain(safeGetDOMElement('shapes-continer'), (elemOpt) => {
-				return pipe(
-					elemOpt,
-					fold(
-							() => () => console.log("No element found!"),
-							(elem) => safeAddElement(svg, elem))
-					)
-			})
+const insertIO = (btnID:string, factoryIO: IO<SVGSupportedGraphicElements>) => {
+	return bindControlButton(btnID, handlerIO(factoryIO))
+}
+
+const handlerIO = (factoryIO: IO<SVGSupportedGraphicElements>) => pipe(
+	io.chain(factoryIO, (svg) => {
+		return io.chain(safeGetDOMElement('shapes-continer'), (elemOpt) => {
+			return pipe(
+				elemOpt,
+				fold(
+						() => () => console.log("No element found!"),
+						(elem) => safeAddElement(svg, elem))
+				)
 		})
-	)
-	handlerIO()
-})
+	})
+)
 
-insertIO()
+const insertRectIO = insertIO('insertRectBtn', rectFactory())
+const insertCircleIO = insertIO('insertCircleBtn', circleFactory())
+
+insertRectIO()
+insertCircleIO()
 
 
 const prog :IO<void> = pipe(
