@@ -1,5 +1,6 @@
 import { pipe } from "fp-ts/lib/pipeable";
 import { IO, io } from "fp-ts/lib/IO";
+import { Point } from "~adt";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -49,6 +50,35 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 	shapeControl.setAttribute("fill", "transparent");
 	shapeControl.setAttribute("stroke", "black");
 	shapeControl.setAttribute("stroke-width", '2');
+	
+	let initialMousePosition :Point = {x: 0, y: 0}
+	shapeControl.addEventListener('click', () => {
+		console.log('Click on control');
+		
+	})
+
+	shapeControl.addEventListener('mousedown', (event) => {
+		shapeControl.classList.add("dragging")
+		console.log('Start drag on element');
+		
+	})
+
+	shapeControl.addEventListener('mousemove', (event) => {
+		event.preventDefault();
+		if (shapeControl.classList.contains("dragging")) {
+			var dragX = event.clientX;
+			var dragY = event.clientY;
+			shapeControl.setAttributeNS(null, "x", dragX.toString());
+			shapeControl.setAttributeNS(null, "y", dragY.toString());
+			console.log('Dragging drag on element');
+		}
+	})
+
+	shapeControl.addEventListener('mouseup', (event) => {
+		shapeControl.classList.remove("dragging")
+		console.log('End drag on element');
+		
+	})
 
 	return shapeControl;
 }
