@@ -87,6 +87,8 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 		() => {
 			const controlX = shapeControl.getAttributeNS(null, 'x');
 			const controlY = shapeControl.getAttributeNS(null, 'y');
+			//Todo use transformation matrix - not all the SVG Elements have x and y coordinated
+			// Circle move bug
 			shape.setAttributeNS(null, "x", controlX);
 			shape.setAttributeNS(null, "y", controlY);
 		})
