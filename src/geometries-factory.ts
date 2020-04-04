@@ -1,6 +1,8 @@
 import { pipe } from "fp-ts/lib/pipeable";
 import { IO, io } from "fp-ts/lib/IO";
 import { Point } from "~adt";
+import { of, fromEvent, animationFrameScheduler } from 'rxjs';
+import { map, switchMap, takeUntil, startWith, tap, filter, subscribeOn } from 'rxjs/operators';
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -51,34 +53,43 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 	shapeControl.setAttribute("stroke", "black");
 	shapeControl.setAttribute("stroke-width", '2');
 	
-	let initialMousePosition :Point = {x: 0, y: 0}
+	const initialMousePosition :Point = {x: 0, y: 0}
 	shapeControl.addEventListener('click', () => {
 		console.log('Click on control');
 		
 	})
 
-	shapeControl.addEventListener('mousedown', (event) => {
-		shapeControl.classList.add("dragging")
-		console.log('Start drag on element');
-		
-	})
+	const mousedown$ = fromEvent<MouseEvent>(shapeControl, 'mousedown');
+	const mousemove$ = fromEvent<MouseEvent>(document, 'mousemove');
+	const mouseup$ = fromEvent<MouseEvent>(shapeControl, 'mouseup');
 
-	shapeControl.addEventListener('mousemove', (event) => {
-		event.preventDefault();
-		if (shapeControl.classList.contains("dragging")) {
-			var dragX = event.clientX;
-			var dragY = event.clientY;
-			shapeControl.setAttributeNS(null, "x", dragX.toString());
-			shapeControl.setAttributeNS(null, "y", dragY.toString());
-			console.log('Dragging drag on element');
-		}
-	})
+	const drag$ = mousedown$.pipe(
+		switchMap(
+			(start) =>
+				mousemove$.pipe(map(mouseEvent => {
+					mouseEvent.preventDefault();
+					return {
+						x: mouseEvent.offsetX, // - start.offsetX,
+						y: mouseEvent.offsetY //- start.offsetY
+					}
+				}),
+				// tap(point => console.log(point)),
+				takeUntil(mouseup$))));
+	
+	const position$ = drag$.pipe(subscribeOn(animationFrameScheduler));
+	
+	position$.subscribe((pos: Point) => {
+		shapeControl.setAttributeNS(null, "x", pos.x.toString());
+		shapeControl.setAttributeNS(null, "y", pos.y.toString());
+	});
 
-	shapeControl.addEventListener('mouseup', (event) => {
-		shapeControl.classList.remove("dragging")
-		console.log('End drag on element');
-		
-	})
+	mouseup$.subscribe(
+		() => {
+			const controlX = shapeControl.getAttributeNS(null, 'x');
+			const controlY = shapeControl.getAttributeNS(null, 'y');
+			shape.setAttributeNS(null, "x", controlX);
+			shape.setAttributeNS(null, "y", controlY);
+		})
 
 	return shapeControl;
 }

@@ -34,28 +34,25 @@ export const safeAddElement = (
 };
 
 
-export const addShapeToCanvas = (shape: SVGSupportedGraphicElements):IO<void> => {
-  return io.chain(safeGetDOMElement("shapes-continer"), (elemOpt) =>
+export const addShapeToCanvas = (shape: SVGSupportedGraphicElements):IO<void> =>
+  io.chain(safeGetDOMElement("shapes-continer"), (elemOpt) =>
     pipe(
       elemOpt,
       fold(
         () => () => console.log("No shape container found!"),
-        (elem) => {
-          return io.chain(safeGetDOMElement("manipulators-continer"), (manOpt) => 
+        (elem) =>
+          io.chain(safeGetDOMElement("manipulators-continer"), (manOpt) => 
             pipe(
               manOpt,
               fold(
                 () => () => console.log("No manipulators conatiner found!"),
-                (controlsContainer) => {
-                  return io.chain(
+                (controlsContainer) =>
+                  io.chain(
                     safeAddElement(shape, elem), () => safeAddElement(createShapeControls(shape), controlsContainer)
-                  ) 
-                }
+                  )
               )
             )
-          );
-        }
+          )
       )
     )
   )
-}
