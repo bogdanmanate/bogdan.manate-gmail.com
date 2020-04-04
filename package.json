@@ -1,0 +1,33 @@
+{
+  "name": "fp-svg-editor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test-dev": "jest --watch --env=jsdom",
+    "test": "jest --env=jsdom",
+    "format": "npm run tslint && npm run prettier",
+    "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|scss)'",
+    "tslint": "tslint --fix --project tsconfig.json 'src/**/*.+(ts|tsx)'",
+    "build": "parcel build ./src/index.html",
+    "start": "parcel serve ./src/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fp-ts": "^2.5.3",
+    "parcel": "^2.0.0-nightly.180",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "jest": "^25.2.7",
+    "prettier": "^2.0.2",
+    "rimraf": "^3.0.2",
+    "sass": "^1.26.3",
+    "ts-jest": "^25.3.1",
+    "tslint": "^6.1.1"
+  }
+}
