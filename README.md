@@ -17,6 +17,8 @@ Start the project
 npm run start
 ```
 
+This will start the project at this address: http://localhost:1234/
+
 Run the tests
 
 ```
