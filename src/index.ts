@@ -16,6 +16,7 @@ import {
   safeGetDOMElement,
   safeAddEventListener,
   safeAddElement,
+	addShapeToCanvas,
 } from "./dom-utils";
 import { bindControlButton } from "./bindings";
 import {
@@ -24,23 +25,14 @@ import {
   circleFactory,
 } from "./geometries-factory";
 
-const insertIO = (
-  btnID: string,
-  factoryIO: IO<SVGSupportedGraphicElements>
-) =>
+const insertIO = (btnID: string, factoryIO: IO<SVGSupportedGraphicElements>) =>
   bindControlButton(btnID, handlerIO(factoryIO));
 
 const handlerIO = (factoryIO: IO<SVGSupportedGraphicElements>) =>
   pipe(
     io.chain(factoryIO, (svg) =>
-      io.chain(safeGetDOMElement("shapes-continer"), (elemOpt) =>
-        pipe(
-          elemOpt,
-          fold(
-            () => () => console.log("No element found!"),
-            (elem) => safeAddElement(svg, elem)
-          )
-        )))
+      addShapeToCanvas(svg)
+    )
   );
 
 const insertRectIO = insertIO("insertRectBtn", rectFactory());

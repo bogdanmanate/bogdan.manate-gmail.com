@@ -1,14 +1,13 @@
 import {
-  chain,
-  fold,
-  none,
   Option,
-  some,
   fromNullable,
+  fold
 } from "fp-ts/lib/Option";
-
-import { getMonoid, IO, io } from "fp-ts/lib/IO";
+import { IO, io } from "fp-ts/lib/IO";
+import { SVGSupportedGraphicElements, createShapeControls } from "./geometries-factory";
 import { pipe } from "fp-ts/lib/pipeable";
+
+
 
 type PureDomSelector = (id: string) => IO<Option<HTMLElement>>;
 
@@ -30,5 +29,33 @@ export const safeAddElement = (
   parent: HTMLElement | SVGElement
 ): IO<void> => () => {
   console.log("Add element to ", parent);
+
   parent.appendChild(element);
 };
+
+
+export const addShapeToCanvas = (shape: SVGSupportedGraphicElements):IO<void> => {
+  return io.chain(safeGetDOMElement("shapes-continer"), (elemOpt) =>
+    pipe(
+      elemOpt,
+      fold(
+        () => () => console.log("No shape container found!"),
+        (elem) => {
+          return io.chain(safeGetDOMElement("manipulators-continer"), (manOpt) => 
+            pipe(
+              manOpt,
+              fold(
+                () => () => console.log("No manipulators conatiner found!"),
+                (controlsContainer) => {
+                  return io.chain(
+                    safeAddElement(shape, elem), () => safeAddElement(createShapeControls(shape), controlsContainer)
+                  ) 
+                }
+              )
+            )
+          );
+        }
+      )
+    )
+  )
+}

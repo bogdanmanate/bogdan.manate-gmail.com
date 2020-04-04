@@ -1,5 +1,5 @@
 import { pipe } from "fp-ts/lib/pipeable";
-import { getMonoid, IO, io } from "fp-ts/lib/IO";
+import { IO, io } from "fp-ts/lib/IO";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -13,8 +13,8 @@ export const rectFactory = (): IO<SVGSupportedGraphicElements> =>
 export const circleFactory = () => shapeFactory("circle");
 
 export const shapeFactory = (type: string): IO<SVGSupportedGraphicElements> => {
-  const rectIO = () => document.createElementNS(SVG_NS, type);
-  return pipe(io.map(rectIO, setDefaultProperties(type)));
+  const shapeIO = () => document.createElementNS(SVG_NS, type);
+  return pipe(io.map(shapeIO, setDefaultProperties(type)));
 };
 
 const setDefaultProperties = (type: string) => (
@@ -37,3 +37,18 @@ const setDefaultProperties = (type: string) => (
 
   return element;
 };
+
+
+export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
+	const bounds = shape.getBBox()
+	const shapeControl = document.createElementNS(SVG_NS, 'rect');
+	shapeControl.setAttribute("width", bounds.width.toString());
+	shapeControl.setAttribute("height", bounds.height.toString());
+	shapeControl.setAttribute("x", bounds.x.toString());
+	shapeControl.setAttribute("y", bounds.y.toString());
+	shapeControl.setAttribute("fill", "transparent");
+	shapeControl.setAttribute("stroke", "black");
+	shapeControl.setAttribute("stroke-width", '2');
+
+	return shapeControl;
+}
