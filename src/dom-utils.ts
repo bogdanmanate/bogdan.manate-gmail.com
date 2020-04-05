@@ -1,8 +1,8 @@
-import {
-  Option,
-  fromNullable,
-  fold
-} from "fp-ts/lib/Option";
+  import {
+    Option,
+    fromNullable,
+    fold
+  } from "fp-ts/lib/Option";
 import { IO, io } from "fp-ts/lib/IO";
 import { SVGSupportedGraphicElements, createShapeControls } from "./geometries-factory";
 import { pipe } from "fp-ts/lib/pipeable";
