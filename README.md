@@ -1,6 +1,7 @@
 # SVG Editor Intro
 
-The main purpose of this project is to create a SVG Editor using only functional programming techniques. 
+The main purpose of this project is to create a SVG Editor using only functional programming techniques.
+If you are looking for a fully fledge SVG Editor, then please have a look at [SVG Edit](https://github.com/SVG-Edit/svgedit) 
 
 
 # Starting the project
