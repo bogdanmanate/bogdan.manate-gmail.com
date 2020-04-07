@@ -13,9 +13,6 @@ import { flow } from "fp-ts/lib/function";
 
 import { IO, io } from "fp-ts/lib/IO";
 import {
-  safeGetDOMElement,
-  safeAddEventListener,
-  safeAddElement,
 	addShapeToCanvas,
 } from "./dom-utils";
 import { bindControlButton } from "./bindings";
@@ -24,6 +21,7 @@ import {
   SVGSupportedGraphicElements,
   circleFactory,
 } from "./geometries-factory";
+import { initializePage } from "./page";
 
 const insertIO = (btnID: string, factoryIO: IO<SVGSupportedGraphicElements>) =>
   bindControlButton(btnID, handlerIO(factoryIO));
@@ -41,19 +39,6 @@ const insertCircleIO = insertIO("insertCircleBtn", circleFactory());
 insertRectIO();
 insertCircleIO();
 
-const prog: IO<void> = pipe(
-  io.chain(safeGetDOMElement("canvas"), (opt) =>
-    pipe(
-      opt,
-      fold(
-        () => () => console.log("No element found!"),
-        (elem) =>
-          safeAddEventListener(elem, "click", () =>
-            console.log("You have clicked the canvas")
-          )
-      )
-    )
-  )
-);
+const initIO: IO<void> = initializePage('canvas')
 
-prog();
+initIO();
