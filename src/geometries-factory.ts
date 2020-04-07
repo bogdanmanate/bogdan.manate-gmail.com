@@ -9,6 +9,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 export type SVGSupportedGraphicElements =
   | SVGRectElement
   | SVGPathElement
+  | SVGSVGElement
   | SVGCircleElement;
 
 export const rectFactory = (): IO<SVGSupportedGraphicElements> =>
@@ -20,10 +21,17 @@ export const shapeFactory = (type: string): IO<SVGSupportedGraphicElements> => {
   return pipe(io.map(shapeIO, setDefaultProperties(type)));
 };
 
+export const defsFactory = () => shapeFactory("defs")()
+export const svgFactory = (svg: SVGSVGElement) => {
+	const childSVG = shapeFactory("svg")()
+	childSVG.setAttribute('width', svg.getAttribute('width'))
+
+	return childSVG;
+}
 const setDefaultProperties = (type: string) => (
   element: SVGSupportedGraphicElements
 ) => {
-  if (type == "rect") {
+  if (type === "rect") {
     element.setAttribute("width", "100");
     element.setAttribute("height", "100");
     element.setAttribute("fill", "#cdcdcd");
@@ -31,7 +39,7 @@ const setDefaultProperties = (type: string) => (
     element.setAttribute("y", "300");
   }
 
-  if (type == "circle") {
+  if (type === "circle") {
     element.setAttribute("fill", "#cdcdcd");
     element.setAttribute("cx", "250"); // Todo compute from svg size
     element.setAttribute("cy", "300");
