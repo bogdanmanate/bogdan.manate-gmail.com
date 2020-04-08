@@ -34,11 +34,11 @@ export const addShapeToCanvas = (shape: SVGSupportedGraphicElements):IO<void> =>
       fold(
         () => log("No shape container found!"),
         (elem) =>
-          io.chain(safeGetDOMElement("manipulators-continer"), (manOpt) => 
+          io.chain(safeGetDOMElement("controls-continer"), (manOpt) => 
             pipe(
               manOpt,
               fold(
-                () => log("No manipulators conatiner found!"),
+                () => log("No controls conatiner found!"),
                 (controlsContainer) =>
                   io.chain(
                     safeAddElement(shape, elem), () => safeAddElement(createShapeControls(shape), controlsContainer)

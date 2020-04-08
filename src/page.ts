@@ -17,8 +17,8 @@ export const initializePage: (x:string) => IO<void> = (id:string) => io.chain(sa
         (page) => () => {
 					const svg = (page as Element) as SVGSVGElement;
 					page.appendChild(defsFactory())
-					page.appendChild(svgFactory(svg))
-					page.appendChild(svgFactory(svg))
+					page.appendChild(svgFactory(svg, 'shapes-continer'))
+					page.appendChild(svgFactory(svg, 'controls-continer'))
         }
     )
 ))
