@@ -7,7 +7,7 @@ type Container<A> = State<Array<A>, A>;
 
 export interface Workspace {
   geometriesContainer: Container<Geometry>;
-  manipulatorsContainer: Container<Manipulator>;
+  controlsContainer: Container<Manipulator>;
 }
 
 export interface Point {

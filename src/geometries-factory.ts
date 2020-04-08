@@ -22,9 +22,12 @@ export const shapeFactory = (type: string): IO<SVGSupportedGraphicElements> => {
 };
 
 export const defsFactory = () => shapeFactory("defs")()
-export const svgFactory = (svg: SVGSVGElement) => {
+export const svgFactory = (svg: SVGSVGElement, id:string) => {
 	const childSVG = shapeFactory("svg")()
-	childSVG.setAttribute('width', svg.getAttribute('width'))
+	
+	childSVG.setAttribute("id", id)
+	childSVG.setAttributeNS( null, 'width', svg.width.baseVal.value.toString())
+	childSVG.setAttributeNS( null, 'height', svg.height.baseVal.value.toString())
 
 	return childSVG;
 }
