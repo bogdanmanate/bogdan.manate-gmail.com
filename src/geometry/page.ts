@@ -2,7 +2,7 @@ import { IO, io } from "fp-ts/lib/IO";
 
 import {
     safeGetDOMElement
-  } from "./dom-utils";
+  } from "../utils/dom-utils";
 import { pipe } from "fp-ts/lib/pipeable";
 import { fold } from "fp-ts/lib/Option";
 import { flow } from "fp-ts/lib/function";

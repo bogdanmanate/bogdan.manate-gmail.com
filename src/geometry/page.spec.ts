@@ -10,8 +10,8 @@ describe('Page functions should', () => {
 			const pageIO: IO<void> = initializePage("canvas")
 			pageIO() // Execute the side effects
 
-			const svg = document.getElementById('canvas')
-			console.log(svg)
+			const svg = <SVGSVGElement><Element>document.getElementById('canvas')
+			console.log('DING  '+svg.width)
 			expect(svg.childNodes.length).toBe(3)
 
     })
