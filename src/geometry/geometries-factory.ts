@@ -55,14 +55,68 @@ const setDefaultProperties = (type: string) => (
 
 export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 	const bounds = shape.getBBox()
+	const shapeControlGroup = document.createElementNS(SVG_NS, 'g');
+
+	const svgMatrix = createSVGMatrix().translate(bounds.x, bounds.y)
+	
+	shapeControlGroup.transform.baseVal.initialize(shape.ownerSVGElement.createSVGTransformFromMatrix(svgMatrix))
 	const shapeControl = document.createElementNS(SVG_NS, 'rect');
+
 	shapeControl.setAttribute("width", bounds.width.toString());
 	shapeControl.setAttribute("height", bounds.height.toString());
-	shapeControl.setAttribute("x", bounds.x.toString());
-	shapeControl.setAttribute("y", bounds.y.toString());
 	shapeControl.setAttribute("fill", "transparent");
 	shapeControl.setAttribute("stroke", "black");
 	shapeControl.setAttribute("stroke-width", '2');
+
+	shapeControlGroup.appendChild(shapeControl)
+
+	const topLeftControl = createControl();
+	topLeftControl.setAttribute("x", (-2).toString());
+	topLeftControl.setAttribute("y", (-2).toString());
+
+	shapeControlGroup.appendChild(topLeftControl)
+
+	const topMiddleControl = createControl();
+	topMiddleControl.setAttribute("x", (bounds.width/2-2).toString());
+	topMiddleControl.setAttribute("y", (-2).toString());
+
+	shapeControlGroup.appendChild(topMiddleControl)
+
+	const topRightControl = createControl();
+	topRightControl.setAttribute("x", (bounds.width-2).toString());
+	topRightControl.setAttribute("y", (-2).toString());
+
+	shapeControlGroup.appendChild(topRightControl)
+
+	const leftControl = createControl();
+	leftControl.setAttribute("x", (-2).toString());
+	leftControl.setAttribute("y", (bounds.height/2-2).toString());
+
+	shapeControlGroup.appendChild(leftControl)
+
+	const rightControl = createControl();
+	rightControl.setAttribute("x", (bounds.width-2).toString());
+	rightControl.setAttribute("y", (bounds.height/2-2).toString());
+
+	shapeControlGroup.appendChild(rightControl)
+
+	const bottomLeftControl = createControl();
+	bottomLeftControl.setAttribute("x", (-2).toString());
+	bottomLeftControl.setAttribute("y", (bounds.height-2).toString());
+
+	shapeControlGroup.appendChild(bottomLeftControl)
+
+	const bottomMiddleControl = createControl();
+	bottomMiddleControl.setAttribute("x", (bounds.width/2-2).toString());
+	bottomMiddleControl.setAttribute("y", (bounds.height-2).toString());
+
+	shapeControlGroup.appendChild(bottomMiddleControl)
+
+	const bottomRightControl = createControl();
+	bottomRightControl.setAttribute("x", (bounds.width-2).toString());
+	bottomRightControl.setAttribute("y", (bounds.height-2).toString());
+
+	shapeControlGroup.appendChild(bottomRightControl)
 	
 	const initialMousePosition :Point = {x: 0, y: 0}
 	shapeControl.addEventListener('click', () => {
@@ -104,5 +158,15 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 			shape.setAttributeNS(null, "y", controlY);
 		})
 
-	return shapeControl;
+	return 	shapeControlGroup;
+}
+
+const createSVGMatrix = ():SVGMatrix => document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGMatrix();
+const createControl = () => {
+	const control = document.createElementNS(SVG_NS, 'rect');
+	control.setAttribute("width", "4");
+	control.setAttribute("height", "4");
+	control.setAttribute("fill", "#ff0000");
+
+	return control;
 }
