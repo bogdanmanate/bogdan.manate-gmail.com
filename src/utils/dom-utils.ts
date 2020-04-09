@@ -4,7 +4,7 @@
     fold
   } from "fp-ts/lib/Option";
 import { IO, io } from "fp-ts/lib/IO";
-import { SVGSupportedGraphicElements, createShapeControls } from "./geometries-factory";
+import { SVGSupportedGraphicElements, createShapeControls } from "../geometry/geometries-factory";
 import { pipe } from "fp-ts/lib/pipeable";
 import { log } from 'fp-ts/lib/Console'
 

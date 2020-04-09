@@ -1,6 +1,6 @@
 import { pipe } from "fp-ts/lib/pipeable";
 import { IO, io } from "fp-ts/lib/IO";
-import { Point } from "~adt";
+import { Point } from "~data/adt";
 import { of, fromEvent, animationFrameScheduler } from 'rxjs';
 import { map, switchMap, takeUntil, startWith, tap, filter, subscribeOn } from 'rxjs/operators';
 
@@ -26,8 +26,8 @@ export const svgFactory = (svg: SVGSVGElement, id:string) => {
 	const childSVG = shapeFactory("svg")()
 	
 	childSVG.setAttribute("id", id)
-	childSVG.setAttributeNS( null, 'width', svg.width.baseVal.value.toString())
-	childSVG.setAttributeNS( null, 'height', svg.height.baseVal.value.toString())
+	childSVG.setAttribute('width', svg.getAttribute('width'))
+	childSVG.setAttribute('height', svg.getAttribute('height'))
 
 	return childSVG;
 }

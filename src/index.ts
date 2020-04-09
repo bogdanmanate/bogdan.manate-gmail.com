@@ -14,14 +14,14 @@ import { flow } from "fp-ts/lib/function";
 import { IO, io } from "fp-ts/lib/IO";
 import {
 	addShapeToCanvas,
-} from "./dom-utils";
-import { bindControlButton } from "./bindings";
+} from "./utils/dom-utils";
+import { bindControlButton } from "./utils/bindings";
 import {
   rectFactory,
   SVGSupportedGraphicElements,
   circleFactory,
-} from "./geometries-factory";
-import { initializePage } from "./page";
+} from "./geometry/geometries-factory";
+import { initializePage } from "./geometry/page";
 
 const insertIO = (btnID: string, factoryIO: IO<SVGSupportedGraphicElements>) =>
   bindControlButton(btnID, handlerIO(factoryIO));
