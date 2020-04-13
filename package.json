@@ -6,6 +6,7 @@
   "scripts": {
     "test-dev": "jest --watch --env=jsdom",
     "test": "jest --env=jsdom",
+    "test:cypress": "cypress open",
     "format": "npm run tslint && npm run prettier",
     "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|scss)'",
     "tslint": "tslint --fix --project tsconfig.json 'src/**/*.+(ts|tsx)'",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@types/jest": "^25.2.1",
+    "cypress": "^4.3.0",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "jest": "^25.2.7",
