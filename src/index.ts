@@ -27,11 +27,9 @@ const insertIO = (btnID: string, factoryIO: IO<SVGSupportedGraphicElements>) =>
   bindControlButton(btnID, handlerIO(factoryIO));
 
 const handlerIO = (factoryIO: IO<SVGSupportedGraphicElements>) =>
-  pipe(
-    io.chain(factoryIO, (svg) =>
-      addShapeToCanvas(svg)
-    )
-  );
+  io.chain(factoryIO, (svg) =>
+    addShapeToCanvas(svg)
+  )
 
 const insertRectIO = insertIO("insertRectBtn", rectFactory());
 const insertCircleIO = insertIO("insertCircleBtn", circleFactory());

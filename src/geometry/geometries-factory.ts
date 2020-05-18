@@ -1,4 +1,5 @@
 import { pipe } from "fp-ts/lib/pipeable";
+import { Reader } from "fp-ts/lib/Reader";
 import { IO, io } from "fp-ts/lib/IO";
 import { Point } from "../data/adt";
 import { of, fromEvent, animationFrameScheduler } from 'rxjs';
@@ -18,7 +19,7 @@ export const circleFactory = () => shapeFactory("circle");
 
 export const shapeFactory = (type: string): IO<SVGSupportedGraphicElements> => {
   const shapeIO = () => document.createElementNS(SVG_NS, type);
-  return pipe(io.map(shapeIO, setDefaultProperties(type)));
+  return io.map(shapeIO, setDefaultProperties(type));
 };
 
 export const defsFactory = () => shapeFactory("defs")()
@@ -53,7 +54,7 @@ const setDefaultProperties = (type: string) => (
 };
 
 
-export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
+export const createShapeControls = (shape: SVGSupportedGraphicElements): Reader<SVGSVGElement, SVGElement> => (container: SVGSVGElement) => {
 	const bounds = shape.getBBox()
 	const shapeControlGroup = document.createElementNS(SVG_NS, 'g');
 
@@ -118,7 +119,6 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 
 	shapeControlGroup.appendChild(bottomRightControl)
 	
-	const initialMousePosition :Point = {x: 0, y: 0}
 	shapeControl.addEventListener('click', () => {
 		console.log('Click on control');
 		
@@ -138,7 +138,7 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 					mouseEvent.preventDefault();
 					const deltaX = mouseEvent.pageX - prevMouseEvent.pageX;
 					const deltaY = mouseEvent.pageY - prevMouseEvent.pageY;
-					
+
 					return {
 						x: deltaX,
 						y: deltaY
@@ -168,7 +168,7 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements) => {
 	mouseup$.subscribe(
 		() => {
 			const targetMatrix = shapeControlGroup.getCTM()
-			//Todo use transformation matrix - not all the SVG Elements have x and y coordinated
+			// Todo use transformation matrix - not all the SVG Elements have x and y coordinated
 			// Circle move bug
 			shape.setAttributeNS(null, "x", targetMatrix.e.toString());
 			shape.setAttributeNS(null, "y", targetMatrix.f.toString());
