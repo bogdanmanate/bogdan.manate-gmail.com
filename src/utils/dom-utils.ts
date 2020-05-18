@@ -41,7 +41,8 @@ export const addShapeToCanvas = (shape: SVGSupportedGraphicElements):IO<void> =>
                 () => log("No controls conatiner found!"),
                 (controlsContainer) =>
                   io.chain(
-                    safeAddElement(shape, elem), () => safeAddElement(createShapeControls(shape), controlsContainer)
+                    safeAddElement(shape, elem), 
+                    () => safeAddElement(createShapeControls(shape)((elem as unknown) as SVGSVGElement),controlsContainer)
                   )
               )
             )
