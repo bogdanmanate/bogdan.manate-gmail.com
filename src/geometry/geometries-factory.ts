@@ -2,8 +2,10 @@ import { pipe } from "fp-ts/lib/pipeable";
 import { Reader } from "fp-ts/lib/Reader";
 import { IO, io } from "fp-ts/lib/IO";
 import { Point } from "../data/adt";
+import { log } from "fp-ts/lib/Console";
 import { of, fromEvent, animationFrameScheduler } from 'rxjs';
 import { map, switchMap, takeUntil, startWith, tap, filter, subscribeOn, pairwise } from 'rxjs/operators';
+import { left } from "fp-ts/lib/Either";
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -45,8 +47,8 @@ const setDefaultProperties = (type: string) => (
 
   if (type === "circle") {
     element.setAttribute("fill", "#cdcdcd");
-    element.setAttribute("cx", "250"); // Todo compute from svg size
-    // element.setAttribute("cy", "300");
+    element.setAttribute("cx", "50"); // cx and cy need to be equal to radius
+    element.setAttribute("cy", "50");
     element.setAttribute("r", "50");
 	}
 
@@ -74,53 +76,61 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements): Reader<
 	const topLeftControl = createControl();
 	topLeftControl.setAttribute("x", (-2).toString());
 	topLeftControl.setAttribute("y", (-2).toString());
-
+	topLeftControl.classList.add("top-left-control")
+	
 	shapeControlGroup.appendChild(topLeftControl)
-
+	
 	const topMiddleControl = createControl();
 	topMiddleControl.setAttribute("x", (bounds.width/2-2).toString());
 	topMiddleControl.setAttribute("y", (-2).toString());
-
+	topMiddleControl.classList.add("top-middle-control")
+	
 	shapeControlGroup.appendChild(topMiddleControl)
-
+	
 	const topRightControl = createControl();
 	topRightControl.setAttribute("x", (bounds.width-2).toString());
 	topRightControl.setAttribute("y", (-2).toString());
-
+	topRightControl.classList.add("top-right-control")
+	
 	shapeControlGroup.appendChild(topRightControl)
-
+	
 	const leftControl = createControl();
 	leftControl.setAttribute("x", (-2).toString());
 	leftControl.setAttribute("y", (bounds.height/2-2).toString());
-
+	leftControl.classList.add("left-control")
+	
 	shapeControlGroup.appendChild(leftControl)
-
+	
 	const rightControl = createControl();
 	rightControl.setAttribute("x", (bounds.width-2).toString());
 	rightControl.setAttribute("y", (bounds.height/2-2).toString());
-
+	rightControl.classList.add("right-control")
+	
 	shapeControlGroup.appendChild(rightControl)
-
+	
 	const bottomLeftControl = createControl();
 	bottomLeftControl.setAttribute("x", (-2).toString());
 	bottomLeftControl.setAttribute("y", (bounds.height-2).toString());
-
+	bottomLeftControl.classList.add("bottom-left-control")
+	
 	shapeControlGroup.appendChild(bottomLeftControl)
-
+	
 	const bottomMiddleControl = createControl();
 	bottomMiddleControl.setAttribute("x", (bounds.width/2-2).toString());
 	bottomMiddleControl.setAttribute("y", (bounds.height-2).toString());
-
+	bottomMiddleControl.classList.add("bottom-middle-control")
+	
 	shapeControlGroup.appendChild(bottomMiddleControl)
-
+	
 	const bottomRightControl = createControl();
 	bottomRightControl.setAttribute("x", (bounds.width-2).toString());
 	bottomRightControl.setAttribute("y", (bounds.height-2).toString());
+	bottomRightControl.classList.add("bottom-right-control")
 
 	shapeControlGroup.appendChild(bottomRightControl)
 	
 	shapeControl.addEventListener('click', () => {
-		console.log('Click on control');
+		log('Click on control');
 		
 	})
 
@@ -144,7 +154,7 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements): Reader<
 						y: deltaY
 					}
 				}),
-				tap(point => console.log(point)),
+				tap(point => log(point)),
 				takeUntil(mouseup$))));
 	
 	const position$ = drag$.pipe(subscribeOn(animationFrameScheduler));
@@ -152,14 +162,14 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements): Reader<
 	position$.subscribe((pos: Point) => {
 		// const m = createSVGMatrix().translate(pos.x, pos.y);
 		const targetMatrix = shapeControlGroup.getCTM()
-		console.log("------");
-		console.log(targetMatrix)
+		log("------");
+		log(targetMatrix)
 		targetMatrix.e = targetMatrix.e + pos.x
 		targetMatrix.f = targetMatrix.f + pos.y
-		// console.log(targetMatrix)
-		// console.log(pos)
+		// log(targetMatrix)
+		// log(pos)
 		shapeControlGroup.transform.baseVal.initialize(shapeControlGroup.ownerSVGElement.createSVGTransformFromMatrix(targetMatrix))
-		console.log(shapeControlGroup.getCTM());
+		log(shapeControlGroup.getCTM());
 		
 		shapeControl.setAttributeNS(null, "x", "0");
 		shapeControl.setAttributeNS(null, "y", "0");
@@ -170,15 +180,19 @@ export const createShapeControls = (shape: SVGSupportedGraphicElements): Reader<
 			const targetMatrix = shapeControlGroup.getCTM()
 			// Todo use transformation matrix - not all the SVG Elements have x and y coordinated
 			// Circle move bug
-			shape.setAttributeNS(null, "x", targetMatrix.e.toString());
-			shape.setAttributeNS(null, "y", targetMatrix.f.toString());
-			// shape.transform.baseVal.initialize(shape.ownerSVGElement.createSVGTransformFromMatrix(targetMatrix))
+			const shapeTransformMatrix = shape.getCTM();
+			shapeTransformMatrix.e = targetMatrix.e;
+			shapeTransformMatrix.f = targetMatrix.f;
+			// shape.setAttributeNS(null, "x", targetMatrix.e.toString());
+			// shape.setAttributeNS(null, "y", targetMatrix.f.toString());
+			shape.transform.baseVal.initialize(shape.ownerSVGElement.createSVGTransformFromMatrix(shapeTransformMatrix))
 		})
 
 	return 	shapeControlGroup;
 }
 
 const createSVGMatrix = ():SVGMatrix => document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGMatrix();
+
 const createControl = () => {
 	const control = document.createElementNS(SVG_NS, 'rect');
 	control.setAttribute("width", "4");
